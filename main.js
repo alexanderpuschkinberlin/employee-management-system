@@ -27,6 +27,35 @@ const showRoles = async () => {
   console.table(rows);
 };
 
+const addEmployee = async () => {
+  const conn = await getConnection();
+
+  //first name, lastname, role, manager
+  const answer = await inquirer.prompt([
+    {
+      type: "input",
+      name: "first_name",
+      message: "Enter the first name",
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "Enter the last name",
+    },
+    {
+      type: "input",
+      name: "role_id",
+      message: "Enter the role id",
+    },
+    {
+      type: "input",
+      name: "manager_id",
+      message: "Enter the manager id",
+    },
+  ]);
+  console.log(answer);
+};
+
 const closeDB = async () => {
   const conn = await getConnection();
   await conn.end();
@@ -46,7 +75,8 @@ const init = async () => {
             { value: 1, name: "Show all the employees" },
             { value: 2, name: "Show all the roles" },
             { value: 3, name: "Show all the departments" },
-            { value: 4, name: "Exit" },
+            { value: 4, name: "Add an emplyee" },
+            { value: 9, name: "Exit" },
           ],
         },
       ]);
@@ -62,7 +92,10 @@ const init = async () => {
         case 3: // show all departments;
           await showDepartments();
           break;
-        case 4: // exit
+        case 4: // add an employee
+          await addEmployee();
+          break;
+        case 9: // exit
         default:
           shouldExit = false;
           await closeDB();
