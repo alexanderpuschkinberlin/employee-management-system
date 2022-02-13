@@ -1,7 +1,19 @@
 const inquirer = require("inquirer");
+const db = require("./config/connection");
+
+const getConnection = async () => {
+  return await db;
+};
 
 const showEmployees = async () => {
-  console.log("Showing all the employees");
+  const conn = await getConnection();
+  const [rows, fields] = await conn.execute("SELECT * FROM employee");
+  console.table(rows);
+};
+
+const closeDB = async () => {
+  const conn = await getConnection();
+  await conn.end();
 };
 
 const init = async () => {
@@ -35,6 +47,7 @@ const init = async () => {
         case 4: // exit
         default:
           shouldExit = false;
+          await closeDB();
       }
     } catch (err) {
       console.log("Err ocurred while asking a question", err);
