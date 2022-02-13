@@ -1,9 +1,5 @@
 const inquirer = require("inquirer");
-const db = require("./config/connection");
-
-const getConnection = async () => {
-  return await db;
-};
+const { getConnection, closeConnection } = require("./config/connection");
 
 const printInfo = (rows) => {
   console.table(rows);
@@ -100,11 +96,6 @@ const addEmployee = async () => {
   }
 };
 
-const closeDB = async () => {
-  const conn = await getConnection();
-  await conn.end();
-};
-
 const init = async () => {
   let shouldExit = true;
 
@@ -150,7 +141,7 @@ const init = async () => {
         case 9: // exit
         default:
           shouldExit = false;
-          await closeDB();
+          await closeConnection();
       }
     } catch (err) {
       console.log("Err ocurred while asking a question", err);
