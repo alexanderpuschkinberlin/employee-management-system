@@ -7,7 +7,9 @@ const getConnection = async () => {
 
 const showEmployees = async () => {
   const conn = await getConnection();
-  const [rows, fields] = await conn.execute("SELECT * FROM employee");
+  const [rows, fields] = await conn.execute(
+    "SELECT e.id, e.first_name, e.last_name, r.title, m.first_name as manager FROM employee e, role r, employee m where e.role_id = r.id and e.manager_id = m.id"
+  );
   console.table(rows);
 };
 
