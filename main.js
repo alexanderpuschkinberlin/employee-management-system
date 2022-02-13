@@ -96,6 +96,45 @@ const addEmployee = async () => {
   }
 };
 
+const addRole = async () => {
+  // Get department choices
+  const departmentChoices = await getDepartmentChoices();
+
+  //first name, lastname, role, manager
+  const answer = await inquirer.prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "Enter the title",
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "Enter the salary",
+    },
+
+    {
+      type: "list",
+      name: "department_id",
+      message: "Chose a department",
+      choices: departmentChoices,
+    },
+  ]);
+
+  try {
+    // Create an employee
+    const conn = await getConnection();
+    // (1, "Role 1", 1000, 4);
+
+    const [rows, fields] = await conn.execute(
+      `insert into role (title, salary, department_id) values ("${answer.title}", ${answer.salary}, ${answer.department_id})`
+    );
+    console.log("Roles created successfully!");
+  } catch (err) {
+    console.log("Couldn't create a role.", err);
+  }
+};
+
 const init = async () => {
   let shouldExit = true;
 
@@ -111,6 +150,7 @@ const init = async () => {
             { value: 2, name: "Show all the roles" },
             { value: 3, name: "Show all the departments" },
             { value: 4, name: "Add an emplyee" },
+            { value: 5, name: "Add a role" },
             { value: 9, name: "Exit" },
           ],
         },
@@ -136,6 +176,10 @@ const init = async () => {
 
         case 4: // add an employee
           await addEmployee();
+          break;
+
+        case 5: // add a role
+          await addRole();
           break;
 
         case 9: // exit
