@@ -31,8 +31,36 @@ const getRoles = async () => {
   return rows;
 };
 
+const getDepartmentChoices = async () => {
+  const departments = await getDepartments();
+  const departmentChoices = departments.map((d) => {
+    return { name: d.name, value: d.id };
+  });
+  return departmentChoices;
+};
+
+const getRolesChoices = async () => {
+  const roles = await getRoles();
+  const rolesChoices = roles.map((d) => {
+    return { name: d.title, value: d.id };
+  });
+  return rolesChoices;
+};
+
+const geManagersChoices = async () => {
+  const managers = await getEmployees();
+  const managerChoices = managers.map((d) => {
+    return { name: d.first_name + " " + d.last_name, value: d.id };
+  });
+  return managerChoices;
+};
+
 const addEmployee = async () => {
-  const conn = await getConnection();
+  // Get role choices
+  const roleChoices = await getRolesChoices();
+
+  // Get role choices
+  const managerChoices = await geManagersChoices();
 
   //first name, lastname, role, manager
   const answer = await inquirer.prompt([
@@ -47,17 +75,29 @@ const addEmployee = async () => {
       message: "Enter the last name",
     },
     {
-      type: "input",
+      type: "list",
       name: "role_id",
-      message: "Enter the role id",
+      message: "Chose a role",
+      choices: roleChoices,
     },
     {
-      type: "input",
+      type: "list",
       name: "manager_id",
-      message: "Enter the manager id",
+      message: "Chose a manager",
+      choices: managerChoices,
     },
   ]);
-  console.log(answer);
+
+  try {
+    // Create an employee
+    const conn = await getConnection();
+    const [rows, fields] = await conn.execute(
+      `insert into employee (first_name, last_name, role_id, manager_id)  values ("${answer.first_name}", "${answer.last_name}", ${answer.role_id}, ${answer.manager_id})`
+    );
+    console.log("Employee created successfully!");
+  } catch (err) {
+    console.log("Couldn't create an employee.", err);
+  }
 };
 
 const closeDB = async () => {
