@@ -13,6 +13,20 @@ const showEmployees = async () => {
   console.table(rows);
 };
 
+const showDepartments = async () => {
+  const conn = await getConnection();
+  const [rows, fields] = await conn.execute("SELECT id, name from department");
+  console.table(rows);
+};
+
+const showRoles = async () => {
+  const conn = await getConnection();
+  const [rows, fields] = await conn.execute(
+    "Select r.id, r.title, r.salary, d.name from role r, department d where r.department_id = d.id"
+  );
+  console.table(rows);
+};
+
 const closeDB = async () => {
   const conn = await getConnection();
   await conn.end();
@@ -43,8 +57,10 @@ const init = async () => {
           await showEmployees();
           break;
         case 2: // show all roles;
+          await showRoles();
           break;
         case 3: // show all departments;
+          await showDepartments();
           break;
         case 4: // exit
         default:
