@@ -5,26 +5,30 @@ const getConnection = async () => {
   return await db;
 };
 
-const showEmployees = async () => {
+const printInfo = (rows) => {
+  console.table(rows);
+};
+
+const getEmployees = async () => {
   const conn = await getConnection();
   const [rows, fields] = await conn.execute(
     "SELECT e.id, e.first_name, e.last_name, r.title, m.first_name as manager FROM employee e, role r, employee m where e.role_id = r.id and e.manager_id = m.id"
   );
-  console.table(rows);
+  return rows;
 };
 
-const showDepartments = async () => {
+const getDepartments = async () => {
   const conn = await getConnection();
   const [rows, fields] = await conn.execute("SELECT id, name from department");
-  console.table(rows);
+  return rows;
 };
 
-const showRoles = async () => {
+const getRoles = async () => {
   const conn = await getConnection();
   const [rows, fields] = await conn.execute(
     "Select r.id, r.title, r.salary, d.name from role r, department d where r.department_id = d.id"
   );
-  console.table(rows);
+  return rows;
 };
 
 const addEmployee = async () => {
@@ -82,19 +86,27 @@ const init = async () => {
       ]);
 
       //process the answers
+      let rows;
       switch (answer.choice) {
         case 1: // show all employees;
-          await showEmployees();
+          rows = await getEmployees();
+          printInfo(rows);
           break;
+
         case 2: // show all roles;
-          await showRoles();
+          rows = await getRoles();
+          printInfo(rows);
           break;
+
         case 3: // show all departments;
-          await showDepartments();
+          rows = await getDepartments();
+          printInfo(rows);
           break;
+
         case 4: // add an employee
           await addEmployee();
           break;
+
         case 9: // exit
         default:
           shouldExit = false;
