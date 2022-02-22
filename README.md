@@ -4,9 +4,9 @@
 
 Please find the relevant links here:
 
-- Demo Video of the App: [Click Here]()
+- Demo Video of the App: [Click Here](https://drive.google.com/file/d/1NalrcY_-cWTmSPk63r4cQ4IPFZYWZkbo/view?usp=sharing)
 
-- Repository on Github: [Click Here]()
+- Repository on Github: [Click Here](https://github.com/alexanderpuschkinberlin/employee-management-system/)
 
 ## Description
 
